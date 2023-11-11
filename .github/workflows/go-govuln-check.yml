@@ -1,0 +1,37 @@
+name: "Go / Vuln Check"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    #        ┌───────────── minute (0 - 59)
+    #        │  ┌───────────── hour (0 - 23)
+    #        │  │ ┌───────────── day of the month (1 - 31)
+    #        │  │ │ ┌───────────── month (1 - 12 or JAN-DEC)
+    #        │  │ │ │ ┌───────────── day of the week (0 - 6 or SUN-SAT)
+    #        │  │ │ │ │
+    #        │  │ │ │ │
+    #        │  │ │ │ │
+    #        *  * * * *
+    - cron: '30 1 * * 0'
+
+jobs:
+  govulncheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.20.x
+          check-latest: true
+      - name: Fetch Repository
+        uses: actions/checkout@v3
+      - name: Install Govulncheck
+        run: |
+          export GO111MODULE=on
+          export PATH=${PATH}:`go env GOPATH`/bin
+          go install golang.org/x/vuln/cmd/govulncheck@latest
+      - name: Run Govulncheck
+        run: "`go env GOPATH`/bin/govulncheck ./..."
