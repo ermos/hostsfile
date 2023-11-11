@@ -1,58 +1,44 @@
 package hostsfile
 
 import (
-	"fmt"
 	"runtime"
 	"strings"
 )
 
 // AddHost adds a host to the hosts file based on the current OS.
 func AddHost(host Host) error {
-	return addHost(runtime.GOOS, host)
+	return AddHostFromOS(runtime.GOOS, host)
 }
 
-// AddHostByOS adds a host to the hosts file based on the given OS.
-func AddHostByOS(osName string, host Host) error {
-	return addHost(osName, host)
-}
-
-// addHost adds a host to the hosts file based on the given OS.
-func addHost(osName string, host Host) error {
+// AddHostFromOS adds a host to the hosts file based on the given OS.
+func AddHostFromOS(osName string, host Host) error {
 	path, err := GetSystemPathByOS(osName)
 	if err != nil {
 		return err
 	}
 
+	return AddHostFromPath(path, host)
+}
+
+// AddHostFromPath adds a host to the hosts file based on the given path.
+func AddHostFromPath(path string, host Host) error {
 	content, err := readFile(path)
 	if err != nil {
 		return err
 	}
 
-	var lineBuilder []string
-
-	if host.Address == "" {
-		return ErrHostAddressIsRequired
+	l, err := host.ToString()
+	if err != nil {
+		return err
 	}
 
-	lineBuilder = append(lineBuilder, host.Address)
+	l = l + linebreak()
 
-	if len(host.HostNames) == 0 {
-		return ErrHostRequireAtLeastOneHostname
+	if !strings.HasSuffix(string(content), linebreak()) {
+		l = linebreak() + l
 	}
 
-	lineBuilder = append(lineBuilder, host.HostNames...)
-
-	if host.Comment != "" {
-		lineBuilder = append(lineBuilder, fmt.Sprintf("# %s", host.Comment))
-	}
-
-	line := strings.Join(lineBuilder, " ") + "\n"
-
-	if !strings.HasSuffix(string(content), "\n") {
-		line = "\n" + line
-	}
-
-	content = append(content, []byte(line)...)
+	content = append(content, []byte(l)...)
 
 	return writeFile(path, content, 0644)
 }

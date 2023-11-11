@@ -4,7 +4,7 @@ import "testing"
 
 func TestIsCurrentHost(t *testing.T) {
 	host := Host{
-		Address: "127.0.0.1",
+		address: "127.0.0.1",
 	}
 
 	if !host.IsCurrentHost() {
@@ -14,7 +14,7 @@ func TestIsCurrentHost(t *testing.T) {
 
 func TestIsNotCurrentHost(t *testing.T) {
 	host := Host{
-		Address: "0.0.0.0",
+		address: "0.0.0.0",
 	}
 
 	if host.IsCurrentHost() {
@@ -24,7 +24,7 @@ func TestIsNotCurrentHost(t *testing.T) {
 
 func TestIsPrivateHost(t *testing.T) {
 	host := Host{
-		Address: "192.168.1.23",
+		address: "192.168.1.23",
 	}
 
 	if !host.IsPrivateHost() {
@@ -34,7 +34,7 @@ func TestIsPrivateHost(t *testing.T) {
 
 func TestIsNotPrivateHost(t *testing.T) {
 	host := Host{
-		Address: "0.0.0.0",
+		address: "0.0.0.0",
 	}
 
 	if host.IsPrivateHost() {
@@ -44,7 +44,7 @@ func TestIsNotPrivateHost(t *testing.T) {
 
 func TestIsPrivateHostCantParseIPAddress(t *testing.T) {
 	host := Host{
-		Address: "google.com",
+		address: "google.com",
 	}
 
 	if host.IsPrivateHost() {
@@ -54,7 +54,7 @@ func TestIsPrivateHostCantParseIPAddress(t *testing.T) {
 
 func TestIsPublicHost(t *testing.T) {
 	host := Host{
-		Address: "0.0.0.0",
+		address: "0.0.0.0",
 	}
 
 	if !host.IsPublicHost() {
@@ -64,7 +64,7 @@ func TestIsPublicHost(t *testing.T) {
 
 func TestIsNotPublicHost(t *testing.T) {
 	host := Host{
-		Address: "192.168.1.23",
+		address: "192.168.1.23",
 	}
 
 	if host.IsPublicHost() {
@@ -74,8 +74,8 @@ func TestIsNotPublicHost(t *testing.T) {
 
 func TestHasHostName(t *testing.T) {
 	host := Host{
-		Address:   "0.0.0.0",
-		HostNames: []string{"google.com", "localhost"},
+		address:   "0.0.0.0",
+		hostNames: []string{"google.com", "localhost"},
 	}
 
 	if !host.HasHostName("localhost") {
@@ -85,8 +85,8 @@ func TestHasHostName(t *testing.T) {
 
 func TestHasHostNameNotFound(t *testing.T) {
 	host := Host{
-		Address:   "0.0.0.0",
-		HostNames: []string{"google.com", "localhost"},
+		address:   "0.0.0.0",
+		hostNames: []string{"google.com", "localhost"},
 	}
 
 	if host.HasHostName("youtube.com") {

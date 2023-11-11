@@ -19,8 +19,8 @@ func TestAddHostWithoutComment(t *testing.T) {
 	}
 
 	err := AddHost(Host{
-		Address:   "ff02::1",
-		HostNames: []string{"ip6-allnodes"},
+		address:   "ff02::1",
+		hostNames: []string{"ip6-allnodes"},
 	})
 	if err != nil {
 		t.Errorf("expected nil, got %s", err)
@@ -40,16 +40,16 @@ func TestAddHostWithComment(t *testing.T) {
 	}
 
 	err := AddHost(Host{
-		Address:   "ff02::1",
-		HostNames: []string{"ip6-allnodes"},
-		Comment:   "this is a comment",
+		address:   "ff02::1",
+		hostNames: []string{"ip6-allnodes"},
+		comment:   "this is a comment",
 	})
 	if err != nil {
 		t.Errorf("expected nil, got %s", err)
 	}
 }
 
-func TestAddHostByOS(t *testing.T) {
+func TestAddHostFromOS(t *testing.T) {
 	readFile = func(filename string) ([]byte, error) {
 		if filename != "/etc/hosts" {
 			t.Errorf("expected `/etc/hosts` for linux, got `%s`", filename)
@@ -61,9 +61,9 @@ func TestAddHostByOS(t *testing.T) {
 		return nil
 	}
 
-	err := AddHostByOS("linux", Host{
-		Address:   "ff02::1",
-		HostNames: []string{"ip6-allnodes"},
+	err := AddHostFromOS("linux", Host{
+		address:   "ff02::1",
+		hostNames: []string{"ip6-allnodes"},
 	})
 	if err != nil {
 		t.Errorf("expected nil, got %s", err)
@@ -80,7 +80,7 @@ func TestAddHostWithoutAddress(t *testing.T) {
 	}
 
 	err := AddHost(Host{
-		HostNames: []string{"ip6-allnodes"},
+		hostNames: []string{"ip6-allnodes"},
 	})
 	if !errors.Is(err, ErrHostAddressIsRequired) {
 		t.Errorf("expected `%s`, got `%s`", ErrHostAddressIsRequired, err)
@@ -97,7 +97,7 @@ func TestAddHostWithoutHostName(t *testing.T) {
 	}
 
 	err := AddHost(Host{
-		Address: "ff02::1",
+		address: "ff02::1",
 	})
 	if !errors.Is(err, ErrHostRequireAtLeastOneHostname) {
 		t.Errorf("expected `%s`, got `%s`", ErrHostRequireAtLeastOneHostname, err)
@@ -117,8 +117,8 @@ func TestAddHostInHostFileWithoutLineBreakAtEnd(t *testing.T) {
 	}
 
 	err := AddHost(Host{
-		Address:   "ff02::1",
-		HostNames: []string{"ip6-allnodes"},
+		address:   "ff02::1",
+		hostNames: []string{"ip6-allnodes"},
 	})
 	if err != nil {
 		t.Errorf("expected nil, got %s", err)
@@ -137,8 +137,8 @@ func TestAddHostWithWrongOSPath(t *testing.T) {
 	}
 
 	err := AddHost(Host{
-		Address:   "ff02::1",
-		HostNames: []string{"ip6-allnodes"},
+		address:   "ff02::1",
+		hostNames: []string{"ip6-allnodes"},
 	})
 	if !errors.Is(err, expectedErr) {
 		t.Errorf("expected `%s`, got `%s`", expectedErr, err)
@@ -154,9 +154,9 @@ func TestAddHostWithUnsupportedOperatingSystem(t *testing.T) {
 		return nil
 	}
 
-	err := AddHostByOS("unsupported", Host{
-		Address:   "ff02::1",
-		HostNames: []string{"ip6-allnodes"},
+	err := AddHostFromOS("unsupported", Host{
+		address:   "ff02::1",
+		hostNames: []string{"ip6-allnodes"},
 	})
 	if !errors.Is(err, ErrUnsupportedOperatingSystem) {
 		t.Errorf("expected `%s`, got `%s`", ErrUnsupportedOperatingSystem, err)

@@ -11,8 +11,8 @@ func TestFindFromHostName(t *testing.T) {
 		t.Errorf("expected nil, got %s", err)
 	}
 
-	if host.Address != "0.0.0.0" {
-		t.Errorf("wrong host address, expected `0.0.0.0`, got `%s`", host.Address)
+	if host.address != "0.0.0.0" {
+		t.Errorf("wrong host address, expected `0.0.0.0`, got `%s`", host.address)
 	}
 }
 
@@ -29,8 +29,8 @@ func TestFindFromAddress(t *testing.T) {
 		t.Errorf("expected nil, got %s", err)
 	}
 
-	if host.HostNames[0] != "yahoo.com" {
-		t.Errorf("wrong hostname, expected `yahoo.com, got `%s`", host.HostNames[0])
+	if host.hostNames[0] != "yahoo.com" {
+		t.Errorf("wrong hostname, expected `yahoo.com, got `%s`", host.hostNames[0])
 	}
 }
 
@@ -47,11 +47,11 @@ func TestFindAllFromAddress(t *testing.T) {
 		t.Errorf("wrong hosts length, expected `2`, got `%d`", len(hosts))
 	}
 
-	if hosts[0].HostNames[0] != "yahoo.com" && hosts[1].HostNames[0] != "youtube.com" {
+	if hosts[0].hostNames[0] != "yahoo.com" && hosts[1].hostNames[0] != "youtube.com" {
 		t.Errorf(
 			"wrong hosts address, expected `yahoo.com` and `youtube.com`, got `%s` and `%s`",
-			hosts[0].HostNames[0],
-			hosts[1].HostNames[0],
+			hosts[0].hostNames[0],
+			hosts[1].hostNames[0],
 		)
 	}
 }
@@ -62,8 +62,8 @@ func TestFindFromComment(t *testing.T) {
 		t.Errorf("expected nil, got %s", err)
 	}
 
-	if host.Address != "1.1.1.1" {
-		t.Errorf("wrong host address, expected `1.1.1.1`, got `%s`", host.Address)
+	if host.address != "1.1.1.1" {
+		t.Errorf("wrong host address, expected `1.1.1.1`, got `%s`", host.address)
 	}
 }
 
@@ -80,34 +80,36 @@ func TestFindAllFromComment(t *testing.T) {
 		t.Errorf("wrong hosts length, expected `2`, got `%d`", len(hosts))
 	}
 
-	if hosts[0].Address != "1.1.1.1" && hosts[1].Address != "2.2.2.2" {
+	if hosts[0].address != "1.1.1.1" && hosts[1].address != "2.2.2.2" {
 		t.Errorf(
 			"wrong hosts address, expected `1.1.1.1` and `2.2.2.2`, got `%s` and `%s`",
-			hosts[0].Address,
-			hosts[1].Address,
+			hosts[0].address,
+			hosts[1].address,
 		)
 	}
 }
 
-func fakeHosts() Hosts {
-	return Hosts{
-		Host{
-			Address:   "0.0.0.0",
-			HostNames: []string{"google.com", "localhost"},
-		},
-		Host{
-			Address:   "1.1.1.1",
-			HostNames: []string{"yahoo.com"},
-			Comment:   "this is a comment",
-		},
-		Host{
-			Address:   "2.2.2.2",
-			HostNames: []string{"google.com", "localhost"},
-			Comment:   "this is a comment",
-		},
-		Host{
-			Address:   "1.1.1.1",
-			HostNames: []string{"youtube.com"},
+func fakeHosts() *Hosts {
+	return &Hosts{
+		hosts: []*Host{
+			{
+				address:   "0.0.0.0",
+				hostNames: []string{"google.com", "localhost"},
+			},
+			{
+				address:   "1.1.1.1",
+				hostNames: []string{"yahoo.com"},
+				comment:   "this is a comment",
+			},
+			{
+				address:   "2.2.2.2",
+				hostNames: []string{"google.com", "localhost"},
+				comment:   "this is a comment",
+			},
+			{
+				address:   "1.1.1.1",
+				hostNames: []string{"youtube.com"},
+			},
 		},
 	}
 }
