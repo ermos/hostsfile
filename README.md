@@ -1,7 +1,5 @@
 # hostsfile
-> 🏗️ Parse and edit hosts file easily with go
-
-`hostsfile` is a Go package for parsing and editing the hosts file.
+> Go package for working with the hosts file
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/ermos/hostsfile.svg)](https://pkg.go.dev/github.com/ermos/hostsfile)
 [![Latest tag](https://img.shields.io/github/v/tag/ermos/hostsfile?label=latest)](https://github.com/ermos/hostsfile/tags)
