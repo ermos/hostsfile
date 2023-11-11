@@ -20,20 +20,30 @@ func GetSystemPathByOS(osName string) (path string, err error) {
 func getSystemPath(osName string) (path string, err error) {
 	switch osName {
 	case "linux", "darwin", "aix", "dragonfly", "freebsd", "ios", "netbsd", "openbsd", "solaris":
-		return "/etc/hosts", nil
+		path = "/etc/hosts"
 	case "windows":
-		return fmt.Sprintf(`%s\System32\drivers\etc\hosts`, os.Getenv("SystemRoot")), nil
+		path = fmt.Sprintf(`%s\System32\drivers\etc\hosts`, os.Getenv("SystemRoot"))
 	case "android":
-		return "/system/etc/hosts", nil // can be "/etc/hosts"
+		if _, err = statFile("/system/etc/hosts"); err != nil {
+			path = "/etc/hosts"
+			break
+		}
+		path = "/system/etc/hosts"
 	case "hurd":
-		return "/hurd/hosts", nil // can be "/etc/hosts"
+		if _, err = statFile("/hurd/hosts"); err != nil {
+			path = "/etc/hosts"
+			break
+		}
+		path = "/hurd/hosts"
 	case "illumos":
-		return "/etc/inet/hosts", nil
+		path = "/etc/inet/hosts"
 	case "plan9":
-		return "/lib/ndb/local", nil
+		path = "/lib/ndb/local"
 	case "zos":
-		return "SYS1.PARMLIB(HOSTS)", nil
+		path = "SYS1.PARMLIB(HOSTS)"
 	default:
 		return "", ErrUnsupportedOperatingSystem
 	}
+
+	return path, nil
 }

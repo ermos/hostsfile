@@ -15,23 +15,23 @@ func TestParse(t *testing.T) {
 		t.Errorf("expected nil, got %s", err)
 	}
 
-	if len(hosts) != 2 {
-		t.Errorf("expected 2 hosts, got %d", len(hosts))
+	if len(hosts.GetHosts()) != 2 {
+		t.Errorf("expected 2 hosts, got %d", len(hosts.GetHosts()))
 	}
 }
 
-func TestParseByOS(t *testing.T) {
+func TestParseFromOS(t *testing.T) {
 	readFile = func(filename string) ([]byte, error) {
 		return parseRead(), nil
 	}
 
-	hosts, err := ParseByOS("linux")
+	hosts, err := ParseFromOS("linux")
 	if err != nil {
 		t.Errorf("expected nil, got %s", err)
 	}
 
-	if len(hosts) != 2 {
-		t.Errorf("expected 2 hosts, got %d", len(hosts))
+	if len(hosts.GetHosts()) != 2 {
+		t.Errorf("expected 2 hosts, got %d", len(hosts.GetHosts()))
 	}
 }
 
@@ -53,7 +53,7 @@ func TestParseWithUnsupportedOperatingSystem(t *testing.T) {
 		return []byte{}, nil
 	}
 
-	_, err := ParseByOS("unsupported")
+	_, err := ParseFromOS("unsupported")
 	if !errors.Is(err, ErrUnsupportedOperatingSystem) {
 		t.Errorf("expected `%s`, got `%s`", ErrUnsupportedOperatingSystem, err)
 	}

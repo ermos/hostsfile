@@ -6,42 +6,48 @@ import (
 )
 
 // Parse parses the hosts file based on the current OS.
-func Parse() (hosts Hosts, err error) {
-	return parseFile(runtime.GOOS)
+func Parse() (hosts *Hosts, err error) {
+	return ParseFromOS(runtime.GOOS)
 }
 
-// ParseByOS parses the hosts file based on the given OS.
-func ParseByOS(osName string) (hosts Hosts, err error) {
-	return parseFile(osName)
-}
-
-// parseFile parses the hosts file based on the given OS.
-func parseFile(osName string) (hosts Hosts, err error) {
-	var content []byte
-
+// ParseFromOS parses the hosts file based on the given OS.
+func ParseFromOS(osName string) (hosts *Hosts, err error) {
 	path, err := GetSystemPathByOS(osName)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	content, err = readFile(path)
-	if err != nil {
-		return nil, err
-	}
-
-	return parseContent(string(content))
+	return ParseFromPath(path)
 }
 
-// parseContent parses the content of the hosts file.
-func parseContent(content string) (hosts []Host, err error) {
+// ParseFromPath parses the hosts file based on the given path.
+func ParseFromPath(path string) (hosts *Hosts, err error) {
+	var contentByte []byte
+	var content string
+
+	hosts = &Hosts{}
+
+	contentByte, err = readFile(path)
+	if err != nil {
+		return
+	}
+
+	content = string(contentByte)
+
+	hosts.path = path
+
 main:
-	for _, line := range strings.Split(content, "\n") {
+	for _, l := range strings.Split(content, linebreak()) {
 		var hostNames []string
 		var comment string
 
-		fields := strings.Fields(line)
+		fields := strings.Fields(l)
 
 		if len(fields) <= 1 || strings.HasPrefix(fields[0], "#") {
+			hosts.content = append(hosts.content, line{
+				IsHost:  false,
+				Content: l,
+			})
 			continue
 		}
 
@@ -49,24 +55,38 @@ main:
 		for i, domain := range hostNames {
 			if strings.HasPrefix(domain, "#") {
 				if i == 0 {
+					hosts.content = append(hosts.content, line{
+						IsHost:  false,
+						Content: l,
+					})
 					continue main
 				}
 
-				hostNames = hostNames[:i]
 				comment = strings.TrimSpace(
 					strings.TrimPrefix(
 						strings.Join(hostNames[i:], " "),
 						"#",
 					),
 				)
+				hostNames = hostNames[:i]
+
 				break
 			}
 		}
 
-		hosts = append(hosts, Host{
-			Address:   fields[0],
-			HostNames: hostNames,
-			Comment:   comment,
+		host := &Host{
+			address:   fields[0],
+			hostNames: hostNames,
+			comment:   comment,
+			parent:    hosts,
+		}
+
+		hosts.hosts = append(hosts.hosts, host)
+
+		hosts.content = append(hosts.content, line{
+			IsHost:  true,
+			Content: l,
+			Host:    host,
 		})
 	}
 

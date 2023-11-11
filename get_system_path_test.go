@@ -47,6 +47,10 @@ func TestGetSystemPathByOS(t *testing.T) {
 		"zos":       "SYS1.PARMLIB(HOSTS)",
 	}
 
+	statFile = func(path string) (os.FileInfo, error) {
+		return nil, nil
+	}
+
 	for osName, expectedPath := range testCases {
 		var path string
 
@@ -65,5 +69,29 @@ func TestGetSystemPathByOSWithInvalidOS(t *testing.T) {
 	_, err := GetSystemPathByOS("invalid")
 	if !errors.Is(err, ErrUnsupportedOperatingSystem) {
 		t.Errorf("expected `%s`, got `%s`", ErrUnsupportedOperatingSystem, err)
+	}
+}
+
+func TestGetSystemPathByOSSpecialCases(t *testing.T) {
+	testCases := map[string]string{
+		"android": "/etc/hosts",
+		"hurd":    "/etc/hosts",
+	}
+
+	statFile = func(path string) (os.FileInfo, error) {
+		return nil, errors.New("file not found")
+	}
+
+	for osName, expectedPath := range testCases {
+		var path string
+
+		path, err := GetSystemPathByOS(osName)
+		if err != nil {
+			t.Errorf("GetSystemPathByOS for %s returned an error: %v", osName, err)
+		}
+
+		if path != expectedPath {
+			t.Errorf("GetSystemPathByOS for %s returned incorrect path: got %s, want %s", osName, path, expectedPath)
+		}
 	}
 }
