@@ -1,5 +1,5 @@
 lint:
-	@golangci-lint run
+	@go fmt . && golangci-lint run
 
 test:
 	@go test

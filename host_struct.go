@@ -5,11 +5,11 @@ import "net"
 // Host represents a host in the hosts file.
 type Host struct {
 	// Address is the IP address of the host.
-	Address   string
+	Address string
 	// HostNames is the hostnames of the host.
 	HostNames []string
 	// Comment is the comment of the host.
-	Comment   string
+	Comment string
 }
 
 // IsCurrentHost returns true if the host is the current host.
