@@ -1,2 +1,2 @@
 # hostsfile
-🏗️ Parse and edit hosts file easily with go
+> 🏗️ Parse and edit hosts file easily with go
