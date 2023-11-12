@@ -17,3 +17,4 @@ generate/examples:
 	@cd ./examples/remove-host && go run .
 	@cd ./examples/add-raw && go run .
 	@cd ./examples/clear-hosts-file && go run .
+	@cd ./examples/new-hosts-file && go run .

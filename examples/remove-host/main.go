@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	hosts, err := hostsfile.ParseFromPath("../default.hosts")
+	hosts, err := hostsfile.LoadFromPath("../default.hosts")
 	if err != nil {
 		panic(err)
 	}

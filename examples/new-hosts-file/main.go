@@ -5,10 +5,7 @@ import (
 )
 
 func main() {
-	hosts, err := hostsfile.LoadFromPath("../default.hosts")
-	if err != nil {
-		panic(err)
-	}
+	hosts := hostsfile.NewHosts("./generated.hosts")
 
 	hosts.AddHost(hostsfile.NewHost(
 		"1.1.1.1",
@@ -16,7 +13,7 @@ func main() {
 		hostsfile.WithComment("Cloudflare DNS"),
 	))
 
-	if err = hosts.FlushToPath("./generated.hosts"); err != nil {
+	if err := hosts.Flush(); err != nil {
 		panic(err)
 	}
 }
