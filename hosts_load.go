@@ -5,23 +5,23 @@ import (
 	"strings"
 )
 
-// Parse parses the hosts file based on the current OS.
-func Parse() (hosts *Hosts, err error) {
-	return ParseFromOS(runtime.GOOS)
+// Load parses the hosts file based on the current OS.
+func Load() (hosts *Hosts, err error) {
+	return LoadFromOS(runtime.GOOS)
 }
 
-// ParseFromOS parses the hosts file based on the given OS.
-func ParseFromOS(osName string) (hosts *Hosts, err error) {
+// LoadFromOS parses the hosts file based on the given OS.
+func LoadFromOS(osName string) (hosts *Hosts, err error) {
 	path, err := GetSystemPathByOS(osName)
 	if err != nil {
 		return
 	}
 
-	return ParseFromPath(path)
+	return LoadFromPath(path)
 }
 
-// ParseFromPath parses the hosts file based on the given path.
-func ParseFromPath(path string) (hosts *Hosts, err error) {
+// LoadFromPath parses the hosts file based on the given path.
+func LoadFromPath(path string) (hosts *Hosts, err error) {
 	var contentByte []byte
 	var content string
 
