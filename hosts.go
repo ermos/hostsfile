@@ -2,15 +2,13 @@ package hostsfile
 
 // Hosts represents a hosts file.
 type Hosts struct {
-	path    string
-	hosts   []*Host
-	content []line
+	path string
+	rows []hostRow
 }
 
-type line struct {
-	Content string
-	Host    *Host
-	IsHost  bool
+type hostRow struct {
+	raw  string
+	host *Host
 }
 
 func (hosts *Hosts) GetPath() string {
@@ -18,5 +16,13 @@ func (hosts *Hosts) GetPath() string {
 }
 
 func (hosts *Hosts) GetHosts() []*Host {
-	return hosts.hosts
+	var list []*Host
+
+	for _, l := range hosts.rows {
+		if l.host != nil {
+			list = append(list, l.host)
+		}
+	}
+
+	return list
 }

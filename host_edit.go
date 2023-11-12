@@ -32,16 +32,9 @@ func (h *Host) SetAddress(address string) {
 
 // Remove removes the host from the hosts file.
 func (h *Host) Remove() {
-	for i, host := range h.parent.hosts {
-		if host == h {
-			h.parent.hosts = append(h.parent.hosts[:i], h.parent.hosts[i+1:]...)
-			break
-		}
-	}
-
-	for i, l := range h.parent.content {
-		if l.Host == h {
-			h.parent.content = append(h.parent.content[:i], h.parent.content[i+1:]...)
+	for i, row := range h.parent.rows {
+		if row.host == h {
+			h.parent.rows = append(h.parent.rows[:i], h.parent.rows[i+1:]...)
 			break
 		}
 	}

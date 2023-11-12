@@ -91,24 +91,41 @@ func TestFindAllFromComment(t *testing.T) {
 
 func fakeHosts() *Hosts {
 	return &Hosts{
-		hosts: []*Host{
+		rows: []hostRow{
 			{
-				address:   "0.0.0.0",
-				hostNames: []string{"google.com", "localhost"},
+				raw: "# comment",
 			},
 			{
-				address:   "1.1.1.1",
-				hostNames: []string{"yahoo.com"},
-				comment:   "this is a comment",
+				host: &Host{
+					address:   "0.0.0.0",
+					hostNames: []string{"google.com", "localhost"},
+				},
 			},
 			{
-				address:   "2.2.2.2",
-				hostNames: []string{"google.com", "localhost"},
-				comment:   "this is a comment",
+				host: &Host{
+					address:   "1.1.1.1",
+					hostNames: []string{"yahoo.com"},
+					comment:   "this is a comment",
+				},
 			},
 			{
-				address:   "1.1.1.1",
-				hostNames: []string{"youtube.com"},
+				host: &Host{
+					address:   "2.2.2.2",
+					hostNames: []string{"google.com", "localhost"},
+					comment:   "this is a comment",
+				},
+			},
+			{
+				raw: "# comment",
+			},
+			{
+				host: &Host{
+					address:   "1.1.1.1",
+					hostNames: []string{"youtube.com"},
+				},
+			},
+			{
+				raw: "# comment",
 			},
 		},
 	}

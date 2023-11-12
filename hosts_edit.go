@@ -1,98 +1,73 @@
 package hostsfile
 
-import (
-	"strings"
-)
-
 // AddHost adds a host to the hosts file.
 func (hosts *Hosts) AddHost(host *Host) {
-	hosts.hosts = append(hosts.hosts, host)
+	hosts.rows = append(hosts.rows, hostRow{host: host})
+}
+
+func (hosts *Hosts) AddRaw(raw string) {
+	hosts.rows = append(hosts.rows, hostRow{raw: raw})
 }
 
 // RemoveHostsByAddress removes all hosts with the given address.
 func (hosts *Hosts) RemoveHostsByAddress(address string) {
-	var updatedHosts []*Host
+	var rows []hostRow
 
-	for _, h := range hosts.hosts {
-		if h.address != address {
-			updatedHosts = append(updatedHosts, h)
+	for _, row := range hosts.rows {
+		if row.host == nil || row.host.address != address {
+			rows = append(rows, row)
 		}
 	}
 
-	hosts.hosts = updatedHosts
+	hosts.rows = rows
 }
 
 // RemoveHostsByHostName removes all hosts with the given hostname.
 func (hosts *Hosts) RemoveHostsByHostName(hostName string) {
-	var updatedHosts []*Host
+	var rows []hostRow
 
-	for _, h := range hosts.hosts {
+	for _, row := range hosts.rows {
 		keep := true
 
-		for _, d := range h.hostNames {
-			if d == hostName {
-				keep = false
-				break
+		if row.host != nil {
+			for _, d := range row.host.hostNames {
+				if d == hostName {
+					keep = false
+					break
+				}
 			}
 		}
 
 		if keep {
-			updatedHosts = append(updatedHosts, h)
+			rows = append(rows, row)
 		}
 	}
 
-	hosts.hosts = updatedHosts
+	hosts.rows = rows
 }
 
 // RemoveHostsByComment removes all hosts with the given comment.
 func (hosts *Hosts) RemoveHostsByComment(comment string) {
-	var updatedHosts []*Host
+	var rows []hostRow
 
-	for _, h := range hosts.hosts {
-		if h.comment != comment {
-			updatedHosts = append(updatedHosts, h)
+	for _, row := range hosts.rows {
+		if row.host == nil || row.host.comment != comment {
+			rows = append(rows, row)
 		}
 	}
 
-	hosts.hosts = updatedHosts
+	hosts.rows = rows
 }
 
 // RemoveAllHosts removes all hosts.
 func (hosts *Hosts) RemoveAllHosts() {
-	hosts.hosts = nil
+	var rows []hostRow
 
-	var content []line
-
-	for _, l := range hosts.content {
-		if !l.IsHost {
-			content = append(content, l)
+	for _, row := range hosts.rows {
+		if row.host == nil && row.raw != "" {
+			rows = append(rows, row)
 		}
 	}
 
-	hosts.content = content
-}
-
-// Flush writes the hosts file to disk.
-func (hosts *Hosts) Flush() error {
-	var content []string
-
-	for _, l := range hosts.content {
-		if !l.IsHost {
-			content = append(content, l.Content)
-			continue
-		}
-
-		if l.Host == nil {
-			continue
-		}
-
-		c, err := l.Host.ToString()
-		if err != nil {
-			return err
-		}
-
-		content = append(content, c)
-	}
-
-	return writeFile(hosts.path, []byte(strings.Join(content, linebreak())+linebreak()), 0644)
+	hosts.rows = rows
 }

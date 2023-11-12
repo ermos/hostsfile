@@ -1,54 +1,66 @@
 package hostsfile
 
 // FindFromHostName returns the host from the hostname.
-func (hosts *Hosts) FindFromHostName(hostName string) (host *Host, err error) {
-	for _, h := range hosts.hosts {
-		for _, d := range h.hostNames {
+func (hosts *Hosts) FindFromHostName(hostName string) (*Host, error) {
+	for _, row := range hosts.rows {
+		if row.host == nil {
+			continue
+		}
+
+		for _, d := range row.host.hostNames {
 			if d == hostName {
-				return h, nil
+				return row.host, nil
 			}
 		}
 	}
-	return host, ErrHostNotFound
+
+	return nil, ErrHostNotFound
 }
 
 // FindFromAddress returns the first host found based on given address.
-func (hosts *Hosts) FindFromAddress(address string) (host *Host, err error) {
-	for _, h := range hosts.hosts {
-		if h.address == address {
-			return h, nil
+func (hosts *Hosts) FindFromAddress(address string) (*Host, error) {
+	for _, row := range hosts.rows {
+		if row.host != nil && row.host.address == address {
+			return row.host, nil
 		}
 	}
-	return host, ErrHostNotFound
+
+	return nil, ErrHostNotFound
 }
 
 // FindAllFromAddress returns all hosts found based on given address.
-func (hosts *Hosts) FindAllFromAddress(address string) (hostsFound []*Host) {
-	for _, h := range hosts.hosts {
-		if h.address == address {
-			hostsFound = append(hostsFound, h)
+func (hosts *Hosts) FindAllFromAddress(address string) []*Host {
+	var list []*Host
+
+	for _, row := range hosts.rows {
+		if row.host != nil && row.host.address == address {
+			list = append(list, row.host)
 		}
 	}
-	return hostsFound
+
+	return list
 }
 
 // FindFromComment returns the first host found based on given comment.
-func (hosts *Hosts) FindFromComment(comment string) (host *Host, err error) {
-	for _, h := range hosts.hosts {
-		if h.comment == comment {
-			return h, nil
+func (hosts *Hosts) FindFromComment(comment string) (*Host, error) {
+	for _, row := range hosts.rows {
+		if row.host != nil && row.host.comment == comment {
+			return row.host, nil
 		}
 	}
-	return host, ErrHostNotFound
+
+	return nil, ErrHostNotFound
 }
 
 // FindAllFromComment returns all hosts found based on given comment.
-func (hosts *Hosts) FindAllFromComment(comment string) (hostsFound []*Host) {
-	for _, h := range hosts.hosts {
-		if h.comment == comment {
-			hostsFound = append(hostsFound, h)
+func (hosts *Hosts) FindAllFromComment(comment string) []*Host {
+	var list []*Host
+
+	for _, row := range hosts.rows {
+		if row.host != nil && row.host.comment == comment {
+			list = append(list, row.host)
 		}
 	}
 
-	return hostsFound
+	return list
 }

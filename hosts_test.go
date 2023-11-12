@@ -14,12 +14,16 @@ func TestGetPath(t *testing.T) {
 
 func TestGetHosts(t *testing.T) {
 	hosts := &Hosts{
-		hosts: []*Host{
-			{},
+		rows: []hostRow{
+			{raw: "# comment"},
+			{host: &Host{}},
+			{host: &Host{}},
+			{host: &Host{}},
+			{raw: "# comment"},
 		},
 	}
 
-	if len(hosts.GetHosts()) != 1 {
+	if len(hosts.GetHosts()) != 3 {
 		t.Errorf("GetHosts returned incorrect hosts")
 	}
 }

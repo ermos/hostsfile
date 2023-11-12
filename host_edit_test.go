@@ -81,11 +81,15 @@ func TestRemove(t *testing.T) {
 	}
 
 	hosts := &Hosts{
-		hosts: []*Host{host},
-		content: []line{
+		rows: []hostRow{
 			{
-				IsHost: true,
-				Host:   host,
+				host: host,
+			},
+			{
+				host: &Host{
+					hostNames: []string{"localhost"},
+					address:   "1.1.1.1",
+				},
 			},
 		},
 	}
@@ -94,11 +98,7 @@ func TestRemove(t *testing.T) {
 
 	host.Remove()
 
-	if len(hosts.hosts) != 0 {
-		t.Errorf("Remove did not remove host")
-	}
-
-	if len(hosts.content) != 0 {
+	if len(hosts.rows) != 1 {
 		t.Errorf("Remove did not remove host from content")
 	}
 }
