@@ -44,9 +44,8 @@ main:
 		fields := strings.Fields(l)
 
 		if len(fields) <= 1 || strings.HasPrefix(fields[0], "#") {
-			hosts.content = append(hosts.content, line{
-				IsHost:  false,
-				Content: l,
+			hosts.rows = append(hosts.rows, hostRow{
+				raw: l,
 			})
 			continue
 		}
@@ -55,9 +54,8 @@ main:
 		for i, domain := range hostNames {
 			if strings.HasPrefix(domain, "#") {
 				if i == 0 {
-					hosts.content = append(hosts.content, line{
-						IsHost:  false,
-						Content: l,
+					hosts.rows = append(hosts.rows, hostRow{
+						raw: l,
 					})
 					continue main
 				}
@@ -74,19 +72,13 @@ main:
 			}
 		}
 
-		host := &Host{
-			address:   fields[0],
-			hostNames: hostNames,
-			comment:   comment,
-			parent:    hosts,
-		}
-
-		hosts.hosts = append(hosts.hosts, host)
-
-		hosts.content = append(hosts.content, line{
-			IsHost:  true,
-			Content: l,
-			Host:    host,
+		hosts.rows = append(hosts.rows, hostRow{
+			host: &Host{
+				address:   fields[0],
+				hostNames: hostNames,
+				comment:   comment,
+				parent:    hosts,
+			},
 		})
 	}
 

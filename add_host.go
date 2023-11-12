@@ -32,7 +32,7 @@ func AddHostFromPath(path string, host Host) error {
 		return err
 	}
 
-	l = l + linebreak()
+	l += linebreak()
 
 	if !strings.HasSuffix(string(content), linebreak()) {
 		l = linebreak() + l
